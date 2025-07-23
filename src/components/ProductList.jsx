@@ -1,50 +1,68 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { Row, Col, Card, Button } from 'react-bootstrap';
+import styled from 'styled-components';
+import { FaCartPlus } from 'react-icons/fa';
+
+const ProductTitle = styled.h2`
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+`;
+
+const StyledCard = styled(Card)`
+  margin-bottom: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const StyledButton = styled(Button)`
+  margin-top: auto;
+`;
 
 const ProductList = ({ products, onAddToCart }) => {
-  const [message, setMessage] = useState('');
-
-  const handleAdd = (product) => {
-    onAddToCart(product);
-    setMessage(`🛒 Se agregó "${product.title}" al carrito`);
-    setTimeout(() => setMessage(''), 3000);
-  };
-
   return (
-    <div>
-      {message && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          backgroundColor: '#d4edda',
-          color: '#155724',
-          padding: '12px 20px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-          zIndex: 9999
-        }}>
-          {message}
-        </div>
-      )}
-
-      <h2>Productos</h2>
-      {products.map((product) => (
-        <div key={product.id} style={{ border: '1px solid #ccc', padding: '1rem', margin: '1rem 0', borderRadius: '8px' }}>
-          <Link to={`/product/${product.id}`}>
-            <img
-              src={product.images[0]}
-              alt={product.title}
-              width="150"
-              style={{ display: 'block', marginBottom: '0.5rem', cursor: 'pointer' }}
-            />
-          </Link>
-          <h3>{product.title}</h3>
-          <p><strong>Precio:</strong> ${product.price}</p>
-          <button onClick={() => handleAdd(product)}>Agregar al carrito 🛒</button>
-        </div>
-      ))}
-    </div>
+    <>
+      <ProductTitle>🛍️ Productos Disponibles</ProductTitle>
+      <Row>
+        {products.map((product) => (
+          <Col key={product.id} xs={12} sm={6} md={4} lg={3}>
+            <StyledCard>
+              <Link to={`/producto/${product.id}`}>
+                <Card.Img
+                  variant="top"
+                  src={product.images[0]}
+                  alt={product.title}
+                  style={{ height: '200px', objectFit: 'cover', cursor: 'pointer' }}
+                />
+              </Link>
+              <Card.Body className="d-flex flex-column">
+                <Card.Title>{product.title}</Card.Title>
+                <Card.Text>{product.category.name}</Card.Text>
+                <Card.Text><strong>Precio:</strong> ${product.price}</Card.Text>
+                <StyledButton
+                  variant="success"
+                  onClick={() => onAddToCart(product)}
+                  aria-label={`Agregar ${product.title} al carrito`}
+                >
+                  <FaCartPlus className="me-2" />
+                  Agregar al carrito
+                </StyledButton>
+              </Card.Body>
+            </StyledCard>
+          </Col>
+        ))}
+      </Row>
+    </>
   );
 };
 

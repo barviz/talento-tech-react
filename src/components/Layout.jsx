@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
+  const { user, logout } = useAuth();
+
   return (
     <>
       <nav
@@ -12,16 +15,42 @@ const Layout = ({ children }) => {
           padding: '1rem',
           background: '#eee',
           zIndex: 1000,
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <Link to="/">Inicio</Link> |{' '}
-        <Link to="/cart">Carrito</Link> |{' '}
-        <Link to="/fav">Favs</Link> |{' '}
-        <Link to="/login">Login</Link>
+        <div>
+          <Link to="/" style={{ marginRight: '1rem' }}>Inicio</Link>
+          <Link to="/cart" style={{ marginRight: '1rem' }}>Carrito</Link>
+          <Link to="/dashboard" style={{ marginRight: '1rem' }}>Panel</Link>
+        </div>
+        <div>
+          {user ? (
+            <>
+              <span style={{ marginRight: '1rem' }}>Hola, {user.name}</span>
+              <button
+                onClick={logout}
+                style={{
+                  padding: '5px 10px',
+                  background: '#333',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+        </div>
       </nav>
 
-      <div style={{ padding: '1rem', marginTop: '4rem' }}>
+      <div style={{ marginTop: '65px' }}>
         {children}
       </div>
     </>
